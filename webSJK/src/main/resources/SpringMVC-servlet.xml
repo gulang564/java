@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util-3.2.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <mvc:annotation-driven/>
+
+    <!-- HandlerMapping -->
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+    <!-- HandlerAdapter -->
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--文件上传最大：10M-->
+        <!--配置编码格式才不会中文乱码，只要保证jsp页面和文件上传解析器的格式都是utf-8就不会乱码-->
+        <property name="defaultEncoding" value="UTF-8"></property>
+        <property name="maxUploadSize" value="10485760"/>
+    </bean>
+
+    <!--扫描 @Controller注解的action -->
+    <context:component-scan base-package="com.controller"/>
+
+    <!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
+    <!-- ViewResolver  视图 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!--最懒的方式处理静态资源加载问题，所有资源照收不误
+    但是弊端就是他会把你发出的请求全部按照默认的处理了！
+    -->
+    <mvc:default-servlet-handler/>
+
+
+    <!--
+        <resources mapping="/resources/**" location="/resources/" />
+         <resources mapping="/images/**" location="/images/" />
+         <resources mapping="/js/**" location="/js/" />
+    -->
+    <!--告诉资源解析器，以后以utils打头的都在webApp下面的utils里面找
+    location：本地资源路径,以斜杠开头的会在webapp下面找，如果写具体点，写/WEB-INF/也可以在web-inf下面找的
+    mapping:里面的东西，就是说我以utils打头，后面有多长的子包不用管，都在webapp下面找对应的文件，
+    没有的话，就不现实效果
+    -->
+    <!--<mvc:resources mapping="/com.db_utils/**" location="/WEB-INF/com.db_utils/"></mvc:resources>-->
+
+    <!--想要访问web-inf下面的内容，也需要和springmvc说一句，不然它是不会有动作的-->
+    <!--<mvc:resources mapping="/views/**"  location="/views/"/>-->
+    <!--管理员的内容不让人看-->
+
+    <!--<mvc:resources mapping="/utils/**" location="/utils/"></mvc:resources>-->
+    <!--<mvc:resources mapping="/WEB-INF/**"  location="/WEB-INF/"/>
+    <mvc:resources mapping="/images/**" location="/utils/images/" />-->
+
+
+
+
+</beans>
